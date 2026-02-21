@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Message From My Heart</title>
+    <title>For My Future Wifey</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -12,22 +12,57 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+            background: #fff5f8;
             font-family: 'Georgia', serif;
             overflow: hidden;
             text-align: center;
         }
+
+        /* Background Sticker Layer */
+        .background-stickers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .sticker {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* Positioning the specific stickers */
+        .capy { top: 10%; left: 10%; font-size: 5rem; } /* Capybara */
+        .sunflower-1 { top: 15%; right: 15%; font-size: 4rem; }
+        .sunflower-2 { bottom: 15%; left: 15%; font-size: 4rem; }
+        .heart-bg { top: 50%; left: 5%; color: #ff80ab; font-size: 3rem; }
+        .infinity { bottom: 10%; right: 10%; font-size: 4rem; color: #d81b60; }
+
         .container {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             padding: 3rem;
             border-radius: 30px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             max-width: 500px;
-            border: 2px solid #f06292;
+            border: 4px solid #f8bbd0;
+            backdrop-filter: blur(5px);
+            z-index: 10;
         }
-        h1 { color: #d81b60; font-size: 2.2rem; margin-bottom: 1rem; }
-        p { color: #444; line-height: 1.6; font-size: 1.2rem; margin-bottom: 2rem; }
-        .btn-container { margin-top: 2rem; position: relative; height: 100px; }
+
+        h1 { color: #d81b60; font-size: 2.2rem; }
+        p { color: #444; line-height: 1.6; font-size: 1.2rem; }
+
+        .btn-container { margin-top: 2rem; position: relative; height: 80px; }
         button {
             padding: 15px 40px;
             font-size: 1.2rem;
@@ -36,27 +71,38 @@
             cursor: pointer;
             transition: 0.3s;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        #yesBtn { background-color: #e91e63; color: white; }
-        #yesBtn:hover { transform: scale(1.1); background-color: #d81b60; }
-        #noBtn { background-color: #9e9e9e; color: white; position: absolute; transition: 0.2s ease; }
+        #yesBtn { background-color: #e91e63; color: white; box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3); }
+        #noBtn { background-color: #9e9e9e; color: white; position: absolute; }
         .hidden { display: none; }
-        #success-message { color: #d81b60; animation: fadeIn 2s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Success Message Styling */
+        #success-message { color: #d81b60; animation: heartBeat 1.5s infinite; }
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 
+    <div class="background-stickers">
+        <div class="sticker capy">🦫</div> <div class="sticker sunflower-1">🌻</div>
+        <div class="sticker sunflower-2">🌻</div>
+        <div class="sticker heart-bg">❤️</div>
+        <div class="sticker infinity" style="font-weight: bold;">∞</div>
+    </div>
+
     <audio id="proposalSong">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        </audio>
+    </audio>
 
     <div class="container" id="mainCard">
         <div id="proposalContent">
-            <h1>My Dearest... ❤️</h1>
-            <p>I've spent a long time thinking about our future, and I realized I don't want to spend a single day of it without you by my side.</p>
-            <h2 style="color: #c2185b; margin-bottom: 30px;">Will you marry me?</h2>
+            <h1>My Love... ❤️</h1>
+            <p>You are my forever and always. My life became a sunlit garden the moment I met you.</p>
+            <h2 style="color: #c2185b;">Will you marry me?</h2>
             
             <div class="btn-container">
                 <button id="yesBtn" onclick="accepted()">YES!</button>
@@ -65,47 +111,40 @@
         </div>
 
         <div id="success-message" class="hidden">
-            <h1 style="font-size: 3rem;">💍</h1>
-            <h1>SHE SAID YES!</h1>
-            <p>I love you more than words can say. Forever starts today.</p>
-            <p style="font-size: 2rem;">👩‍❤️‍👨✨</p>
+            <h1>💍 SHE SAID YES!</h1>
+            <p>I love you to infinity and beyond!</p>
+            <div style="font-size: 4rem;">🌻🦫❤️</div>
         </div>
     </div>
 
     <script>
         function moveButton() {
             const btn = document.getElementById('noBtn');
-            // This makes the button jump to a random spot within the container
             const x = Math.random() * (window.innerWidth - btn.offsetWidth);
             const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            
-            // Limit movement to stay somewhat near the center
             btn.style.left = Math.random() * 200 - 100 + 'px';
             btn.style.top = Math.random() * 100 - 50 + 'px';
         }
 
         function accepted() {
-            // 1. Hide the question, show the success message
             document.getElementById('proposalContent').classList.add('hidden');
             document.getElementById('success-message').classList.remove('hidden');
             
-            // 2. Play the song
-            const audio = document.getElementById('proposalSong');
-            audio.play();
+            // Play Music
+            document.getElementById('proposalSong').play();
 
-            // 3. Fire the confetti
-            const duration = 15 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-            const interval = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
+            // Fire Confetti
+            var duration = 15 * 1000;
+            var animationEnd = Date.now() + duration;
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
-                const particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                confetti({
+                    particleCount: 40,
+                    startVelocity: 30,
+                    spread: 360,
+                    origin: { x: Math.random(), y: Math.random() - 0.2 }
+                });
             }, 250);
         }
     </script>
